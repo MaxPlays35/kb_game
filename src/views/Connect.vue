@@ -2,7 +2,10 @@
   <div
     class="border shadow-xl rounded-lg p-10 outline-none focus justify-center divide-y-2 space-y-2 divide-emerald-400"
   >
-    <form @submit.prevent="" class="items-center flex flex-col space-y-2">
+    <form
+      @submit.prevent="joinRoom"
+      class="items-center flex flex-col space-y-2"
+    >
       <label class="self-center" for="roomId">Room Id</label>
       <input type="text" v-model="idRoom" id="roomId" />
       <button class="btn" type="submit">Join Room</button>
@@ -14,16 +17,22 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Api } from "@/api";
 import { defineComponent, inject, ref } from "vue";
+import { nanoid } from "nanoid";
 
 export default defineComponent({
   setup() {
     const idRoom = ref("");
-    const server = inject("api");
-    // server.
+    const server: Api | undefined = inject("api");
+    const joinRoom = () => {
+      if (server) {
+        server.connect(idRoom.value, nanoid(10));
+      }
+    };
 
-    return { idRoom };
+    return { idRoom, joinRoom };
   }
 });
 </script>

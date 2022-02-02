@@ -9,27 +9,28 @@
         class="rounded-5xl w-20"
       />
       <div class="flex flex-col items-center justify-center w-40">
-        <h5>{{ nickname }}</h5>
+        <h5>You</h5>
         <h5>{{ level }} lvl &nbsp; &nbsp; {{ winRate }} %</h5>
       </div>
 
       <div class="flex flex-col items-center justify-center w-40">
-        <h5
+        <button
           :class="{
-            'text-green-500': isReady,
-            'text-red-500': !isReady
+            'bg-green-500 hover:bg-green-700': isReady,
+            'bg-red-500 hover:bg-red-700': !isReady
           }"
-          class="font-bold"
+          class="btn"
+          @click="ready"
         >
           {{ isReady ? "READY" : "NOT READY" }}
-        </h5>
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from "vue";
+import { defineComponent, ref, toRefs } from "vue";
 
 export default defineComponent({
   props: {
@@ -37,27 +38,32 @@ export default defineComponent({
       type: String,
       default: "braytech.png"
     },
-    nickname: {
-      type: String,
-      required: true
-    },
     level: {
       type: Number,
-      required: true
+      required: true,
+      default: 1
     },
     winRate: {
       type: Number,
-      required: true
-    },
-    isReady: {
-      type: Boolean,
-      required: true
+      required: true,
+      default: 0
     }
   },
-  setup(props) {
-    return { ...toRefs(props) };
+  setup(props, { emit }) {
+    const isReady = ref(false);
+    const ready = () => {
+      isReady.value = !isReady.value;
+      emit("update:isReady", isReady.value);
+      console.log(isReady);
+    };
+
+    return { ...toRefs(props), isReady, ready };
   }
 });
 </script>
 
-<style></style>
+<style scoped>
+.btn {
+  @apply w-25 self-center  text-white rounded-sm focus:outline-none  transition-colors border rounded-md h-10;
+}
+</style>

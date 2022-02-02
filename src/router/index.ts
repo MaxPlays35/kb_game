@@ -16,6 +16,13 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/game",
     component: () => import(/* webpackChunkName: "Lobby" */ "@/views/Lobby.vue")
+  },
+  {
+    path: "/profileSettings",
+    component: () =>
+      import(
+        /* webpackChunkName: "ProfileSettings" */ "@/views/ProfileSettings.vue"
+      )
   }
   // {
   //   path: "/about",
