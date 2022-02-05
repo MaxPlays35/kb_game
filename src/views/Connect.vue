@@ -11,7 +11,10 @@
       <button class="btn" type="submit">Join Room</button>
     </form>
 
-    <form @submit.prevent="" class="items-center flex flex-col space-y-2 pt-2">
+    <form
+      @submit.prevent="createRoom"
+      class="items-center flex flex-col space-y-2 pt-2"
+    >
       <button class="btn">Create room</button>
     </form>
   </div>
@@ -20,7 +23,6 @@
 <script lang="ts">
 import { Api } from "@/api";
 import { defineComponent, inject, ref } from "vue";
-import { nanoid } from "nanoid";
 
 export default defineComponent({
   setup() {
@@ -28,11 +30,16 @@ export default defineComponent({
     const server: Api | undefined = inject("api");
     const joinRoom = () => {
       if (server) {
-        server.connect(idRoom.value, nanoid(10));
+        server.connect(idRoom.value);
+      }
+    };
+    const createRoom = () => {
+      if (server) {
+        server.createRoom();
       }
     };
 
-    return { idRoom, joinRoom };
+    return { idRoom, joinRoom, createRoom };
   }
 });
 </script>

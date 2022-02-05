@@ -7,16 +7,17 @@
       <player-host :level="2" :winRate="80" :isReady="false" />
     </div>
 
-    <div class="space-y-2 pt-1.75">
+    <div class="space-y-2 pt-1.75" v-if="players.length">
       <player-lobby
-        nickname="fdssf"
-        :level="2"
-        :winRate="80"
+        :nickname="player.nickname"
+        :level="player.level"
+        :winRate="player.winrate"
         :isReady="true"
-        v-for="i in 5"
-        :key="i"
+        v-for="player in players"
+        :key="player.nickname"
       />
     </div>
+    <div v-else>These is no players</div>
   </div>
 </template>
 
@@ -24,10 +25,14 @@
 import { defineComponent } from "vue";
 import PlayerLobby from "@/components/PlayerLobby.vue";
 import PlayerHost from "@/components/PlayerHost.vue";
+import { useStore } from "vuex";
 
 export default defineComponent({
   setup() {
-    return {};
+    const store = useStore();
+    const players = store.state.players;
+
+    return { players };
   },
   components: {
     PlayerLobby,
