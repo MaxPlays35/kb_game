@@ -1,5 +1,5 @@
 import { App } from "vue";
-import { Api } from "./index";
+import Api from "./index";
 
 export default {
   install: (app: App): void => {

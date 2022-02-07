@@ -21,12 +21,12 @@
 </template>
 
 <script lang="ts">
-import { Api } from "@/api";
-import { defineComponent, inject, ref } from "vue";
+import Api from "@/api";
+import { defineComponent, inject, Ref, ref } from "vue";
 
 export default defineComponent({
   setup() {
-    const idRoom = ref("");
+    const idRoom: Ref<string> = ref("");
     const server: Api | undefined = inject("api");
     const joinRoom = () => {
       if (server) {

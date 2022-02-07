@@ -30,7 +30,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, toRefs } from "vue";
+import Api from "@/api";
+import { defineComponent, inject, toRefs, computed, ComputedRef } from "vue";
+import { useStore } from "vuex";
 
 export default defineComponent({
   props: {
@@ -49,12 +51,16 @@ export default defineComponent({
       default: 0
     }
   },
-  setup(props, { emit }) {
-    const isReady = ref(false);
+  setup(props) {
+    const store = useStore();
+    const isReady: ComputedRef<boolean> = computed(
+      () => store.state.user.isReady
+    );
+    const api: Api | undefined = inject("api");
     const ready = () => {
-      isReady.value = !isReady.value;
-      emit("update:isReady", isReady.value);
-      console.log(isReady);
+      if (api) {
+        api.changeReady();
+      }
     };
 
     return { ...toRefs(props), isReady, ready };

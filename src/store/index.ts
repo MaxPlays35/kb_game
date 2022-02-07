@@ -1,4 +1,8 @@
 import { createStore } from "vuex";
+import HttpApi from "@/api/axios";
+import router from "@/router";
+
+const httpApi = new HttpApi();
 
 export type Player = {
   nickname: string;
@@ -6,6 +10,12 @@ export type Player = {
   winrate: number;
   level: number;
   id: string;
+  isReady: boolean;
+};
+
+export type AuthResponse = {
+  player: Player;
+  token: string;
 };
 
 export interface State {
@@ -21,7 +31,17 @@ export default createStore<State>({
       commit("addPlayer", player);
     },
     updatePlayers({ commit }, players: Player[]) {
-      commit("updatePlayes", players);
+      commit("updatePlayers", players);
+    },
+    updateReady({ commit }, data) {
+      commit("updateReady", data);
+    },
+    async login({ commit }) {
+      const response: AuthResponse = await httpApi.login();
+      console.log(response);
+
+      commit("login", response);
+      router.push("/connect");
     }
   },
   state: {
@@ -32,10 +52,10 @@ export default createStore<State>({
       profilePhoto: "",
       winrate: 50.2,
       level: 1,
-      id: ""
+      id: "",
+      isReady: false
     },
-    token:
-      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0Mzk4ODIxNiwianRpIjoiMDFjZDU0MjktNGJmZi00MWYzLWFlZmMtNzI4MGJkNzM4NzAzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJuaWNrbmFtZSI6InRlc3QiLCJwcm9maWxlSW1hZ2UiOiJicmF5dGVjaC5wbmciLCJ3aW5yYXRlIjo1MCwibGV2ZWwiOjF9LCJuYmYiOjE2NDM5ODgyMTYsImV4cCI6MTY0Mzk4OTExNn0.CK4bb0NnhpgPeq1PlZlsO7nBv2hyG91Qi3-aZppIS7s"
+    token: ""
   },
   mutations: {
     addPlayer(state, player: Player) {
@@ -43,6 +63,18 @@ export default createStore<State>({
     },
     updatePlayers(state, players: Player[]) {
       state.players = players;
+    },
+    updateReady(state, data) {
+      const player: Player | undefined = state.players.find(
+        (pl) => pl.id == data.id
+      );
+      if (player) {
+        player.isReady = data.isReady;
+      }
+    },
+    login(state, data: AuthResponse) {
+      state.user = data.player;
+      state.token = data.token;
     }
   },
   modules: {}

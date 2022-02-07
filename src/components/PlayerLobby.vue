@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   props: {
@@ -55,9 +55,7 @@ export default defineComponent({
     }
   },
   setup(props) {
-    console.log(props);
-
-    return { ...toRefs(props) };
+    return { props };
   }
 });
 </script>

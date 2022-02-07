@@ -2,9 +2,16 @@
   <div
     class="flex flex-col border shadow-xl rounded-lg p-10 outline-none focus justify-center divide-y-2 space-y-2 divide-emerald-400 items-center"
   >
+    <p class="self-center">
+      This room id is <strong>{{ roomId }}</strong>
+    </p>
     <div class="flex flex-col align-center">
       <p class="self-center">List of players</p>
-      <player-host :level="2" :winRate="80" :isReady="false" />
+      <player-host
+        :level="player.level"
+        :winRate="player.winrate"
+        :isReady="player.isReady"
+      />
     </div>
 
     <div class="space-y-2 pt-1.75" v-if="players.length">
@@ -12,27 +19,30 @@
         :nickname="player.nickname"
         :level="player.level"
         :winRate="player.winrate"
-        :isReady="true"
+        :isReady="player.isReady"
         v-for="player in players"
-        :key="player.nickname"
+        :key="player.id"
       />
     </div>
     <div v-else>These is no players</div>
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script lang="ts">
+import { defineComponent, computed, ComputedRef } from "vue";
 import PlayerLobby from "@/components/PlayerLobby.vue";
 import PlayerHost from "@/components/PlayerHost.vue";
 import { useStore } from "vuex";
+import { Player } from "@/store";
 
 export default defineComponent({
   setup() {
     const store = useStore();
-    const players = store.state.players;
+    const players: ComputedRef<Player[]> = computed(() => store.state.players);
+    const player: ComputedRef<Player> = computed(() => store.state.user);
+    const roomId: ComputedRef<string> = computed(() => store.state.roomId);
 
-    return { players };
+    return { players, player, roomId };
   },
   components: {
     PlayerLobby,
