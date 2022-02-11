@@ -42,6 +42,9 @@ export default createStore<State>({
 
       commit("login", response);
       router.push("/connect");
+    },
+    removePlayer({ commit }, data) {
+      commit("removePlayer", data.id);
     }
   },
   state: {
@@ -75,6 +78,11 @@ export default createStore<State>({
     login(state, data: AuthResponse) {
       state.user = data.player;
       state.token = data.token;
+    },
+    removePlayer(state, id: string) {
+      console.log(id, state.players);
+      console.log(state.players.filter((item) => item.id != id));
+      state.players = state.players.filter((item) => item.id !== id);
     }
   },
   modules: {}

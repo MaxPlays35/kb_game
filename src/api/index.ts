@@ -21,13 +21,17 @@ export default class Api {
       store.dispatch("updateReady", data);
     });
 
-    this.connecion.on("room_id", (roomId) => {
+    this.connecion.on("room_id", (roomId: string) => {
       store.state.roomId = roomId;
       router.push("/waiting");
     });
 
     this.connecion.on("authed", (player: Player) => {
       store.state.user = player;
+    });
+
+    this.connecion.on("player_leaved", (data) => {
+      store.dispatch("removePlayer", data);
     });
   }
 
@@ -52,5 +56,14 @@ export default class Api {
 
   public auth(): void {
     this.connecion.emit("auth", store.state.token);
+  }
+
+  public leaveRoom(): void {
+    this.connecion.emit("leave_room", {
+      id: store.state.user.id,
+      roomId: store.state.roomId
+    });
+    store.state.roomId = "";
+    router.push("/");
   }
 }
