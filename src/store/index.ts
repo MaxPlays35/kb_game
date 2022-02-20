@@ -23,7 +23,19 @@ export interface State {
   players: Player[];
   user: Player;
   token: string;
+  chats: {
+    [key: string]: Message[];
+  };
 }
+
+export type Message = {
+  author: {
+    nickname: string;
+    profileUrl: string;
+  };
+  message: string;
+  time: bigint;
+};
 
 export default createStore<State>({
   actions: {
@@ -58,7 +70,19 @@ export default createStore<State>({
       id: "",
       isReady: false
     },
-    token: ""
+    token: "",
+    chats: {
+      social: [
+        {
+          author: {
+            profileUrl: "url",
+            nickname: "eee"
+          },
+          message: "dsads",
+          time: 3423423432432432432234432434324n
+        }
+      ]
+    }
   },
   mutations: {
     addPlayer(state, player: Player) {

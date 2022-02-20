@@ -20,7 +20,7 @@ class HttpApi {
 
   constructor() {
     this.httpClient = axios.create({
-      baseURL: "http://192.168.1.63:5000/"
+      baseURL: "http://127.0.0.1:10000/"
     });
   }
 

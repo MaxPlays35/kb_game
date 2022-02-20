@@ -6,7 +6,7 @@ export default class Api {
   private connecion: Socket;
 
   constructor() {
-    this.connecion = io("ws://127.0.0.1:5000/game");
+    this.connecion = io("ws://127.0.0.1:10000/game");
     this.connecion.on("user_joined", (player: Player) => {
       store.dispatch("addPlayer", player);
     });
@@ -32,6 +32,10 @@ export default class Api {
 
     this.connecion.on("player_leaved", (data) => {
       store.dispatch("removePlayer", data);
+    });
+
+    this.connecion.on("all_ready", () => {
+      router.push("/game");
     });
   }
 
@@ -64,6 +68,7 @@ export default class Api {
       roomId: store.state.roomId
     });
     store.state.roomId = "";
+    store.state.user.isReady = false;
     router.push("/");
   }
 }
