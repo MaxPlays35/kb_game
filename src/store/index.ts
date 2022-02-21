@@ -11,6 +11,7 @@ export type Player = {
   level: number;
   id: string;
   isReady: boolean;
+  peerId: string;
 };
 
 export type AuthResponse = {
@@ -24,9 +25,14 @@ export interface State {
   user: Player;
   token: string;
   chats: {
-    [key: string]: Message[];
+    [key: string]: Chat;
   };
 }
+
+export type Chat = {
+  peerId: string;
+  messages: Message[];
+};
 
 export type Message = {
   author: {
@@ -34,7 +40,7 @@ export type Message = {
     profileUrl: string;
   };
   message: string;
-  time: bigint;
+  time?: string;
 };
 
 export default createStore<State>({
@@ -57,6 +63,12 @@ export default createStore<State>({
     },
     removePlayer({ commit }, data) {
       commit("removePlayer", data.id);
+    },
+    joinRoom({ commit }, roomId) {
+      commit("setRoom", roomId);
+    },
+    addMessage({ commit }, data: Message) {
+      commit("addMessage", data);
     }
   },
   state: {
@@ -68,28 +80,28 @@ export default createStore<State>({
       winrate: 50.2,
       level: 1,
       id: "",
-      isReady: false
+      isReady: false,
+      peerId: ""
     },
     token: "",
-    chats: {
-      social: [
-        {
-          author: {
-            profileUrl: "url",
-            nickname: "eee"
-          },
-          message: "dsads",
-          time: 3423423432432432432234432434324n
-        }
-      ]
-    }
+    chats: {}
   },
   mutations: {
     addPlayer(state, player: Player) {
       state.players.push(player);
+      state.chats[player.nickname] = {
+        peerId: player.peerId,
+        messages: []
+      };
     },
     updatePlayers(state, players: Player[]) {
       state.players = players;
+      for (const player of players) {
+        state.chats[player.nickname] = {
+          peerId: player.peerId,
+          messages: []
+        };
+      }
     },
     updateReady(state, data) {
       const player: Player | undefined = state.players.find(
@@ -107,6 +119,16 @@ export default createStore<State>({
       console.log(id, state.players);
       console.log(state.players.filter((item) => item.id != id));
       state.players = state.players.filter((item) => item.id !== id);
+    },
+    setRoom(state, roomId) {
+      state.roomId = roomId;
+      state.chats.social = {
+        peerId: roomId,
+        messages: []
+      };
+    },
+    addMessage(state, data: Message) {
+      state.chats[data.author.nickname].messages.push(data);
     }
   },
   modules: {}

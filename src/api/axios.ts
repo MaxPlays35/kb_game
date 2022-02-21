@@ -8,6 +8,7 @@ interface Player {
   id: string;
   isReady: boolean;
   token: string;
+  peerId: string;
 }
 
 export type AuthResponse = {

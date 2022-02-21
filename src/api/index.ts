@@ -1,6 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import router from "@/router";
-import store, { Player } from "@/store";
+import store, { Message, Player } from "@/store";
 
 export default class Api {
   private connecion: Socket;
@@ -22,7 +22,7 @@ export default class Api {
     });
 
     this.connecion.on("room_id", (roomId: string) => {
-      store.state.roomId = roomId;
+      store.dispatch("joinRoom", roomId);
       router.push("/waiting");
     });
 
@@ -37,11 +37,15 @@ export default class Api {
     this.connecion.on("all_ready", () => {
       router.push("/game");
     });
+
+    this.connecion.on("message_client", (data: Message) => {
+      store.dispatch("addMessage", data);
+    });
   }
 
   public connect(roomId: string): void {
     this.connecion.emit("join_room", { roomId, id: store.state.user.id });
-    store.state.roomId = roomId;
+    store.dispatch("joinRoom", roomId);
     router.push("/waiting");
   }
 
@@ -70,5 +74,9 @@ export default class Api {
     store.state.roomId = "";
     store.state.user.isReady = false;
     router.push("/");
+  }
+
+  public sendMessage(message: unknown): void {
+    this.connecion.emit("message_server", message);
   }
 }

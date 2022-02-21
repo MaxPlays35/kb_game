@@ -5,20 +5,35 @@
       'flex flex-col bg-blue-500 rounded w-5/6 self-end': blue
     }"
   >
-    <p>dsfds</p>
+    <p></p>
   </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ComputedRef } from "@vue/runtime-core";
+import { toRefs } from "vue";
 import { useStore } from "vuex";
 
-type props = {
-  nickname: string;
-  time: bigint;
-};
+// type props = {
+//   nickname: string;
+//   time: bigint;
+// };
 
-export default defineComponent<props>({
+export default defineComponent({
+  props: {
+    nickname: {
+      type: String,
+      required: true
+    },
+    time: {
+      type: Number,
+      required: true
+    },
+    message: {
+      type: String,
+      required: true
+    }
+  },
   setup(props) {
     const store = useStore();
     const blue: ComputedRef<boolean> = computed(
@@ -26,7 +41,8 @@ export default defineComponent<props>({
     );
 
     return {
-      blue
+      blue,
+      ...toRefs(props)
     };
   }
 });
