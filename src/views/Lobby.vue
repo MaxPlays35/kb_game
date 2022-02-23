@@ -12,8 +12,7 @@
       <div class="flex flex-col h-99/100">
         <h2 class="self-center">Messages</h2>
         <div class="flex flex-col space-y-2">
-          <div v-if="messages.length">
-            {{ messages }}
+          <div class="flex flex-col space-y-2" v-if="messages.length">
             <message-view
               v-for="message in messages"
               :key="message.time"
@@ -23,17 +22,6 @@
             ></message-view>
           </div>
           <p v-else>There is no messages</p>
-          <!-- <div class="bg-warm-gray-50 rounded w-5/6">
-            <p>dsfds</p>
-          </div>
-          <div
-            class="flex flex-col bg-blue-500 rounded w-5/6 self-end text-right"
-          >
-            <p>asdsa</p>
-          </div>
-          <div class="bg-warm-gray-50 rounded w-5/6">
-            <p class="self-end">dsfd,,,s</p>
-          </div> -->
         </div>
       </div>
       <div class="h-auto">
@@ -69,7 +57,119 @@
         </div>
       </div>
       <div class="bg-cyan-500 h-full">
-        <div class="p-4"></div>
+        <div class="p-4 flex flex-col justify-center pt-25">
+          <div
+            class="flex flex-col border shadow-xl rounded-lg p-10 outline-none justify-center space-y-5 bg-white items-center text-center"
+          >
+            <div class="table border-collapse table-auto">
+              <div class="table-caption">Market state</div>
+              <div class="table-header-group">
+                <div class="table-row">
+                  <div class="table-cell border border-black p-1">Level</div>
+                  <div class="table-cell border border-black p-1">
+                    Volume raw materials
+                  </div>
+                  <div class="table-cell border border-black p-1">
+                    Min price for raw materials
+                  </div>
+                  <div class="table-cell border border-black p-1">
+                    Demand for destroyers
+                  </div>
+                  <div class="table-cell border border-black p-1">
+                    Max price for destroyers
+                  </div>
+                </div>
+              </div>
+              <div class="table-row-group">
+                <div class="table-row">
+                  <div class="table-cell border border-black p-1">
+                    {{ roomState.level }}
+                  </div>
+                  <div class="table-cell border border-black p-1">
+                    {{ roomState.volume }}
+                  </div>
+                  <div class="table-cell border border-black p-1">
+                    {{ roomState.minPriceRow }}
+                  </div>
+                  <div class="table-cell border border-black p-1">
+                    {{ roomState.maxDestroyers }}
+                  </div>
+                  <div class="table-cell border border-black p-1">
+                    {{ roomState.maxPriceDestroyer }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="table border-collapse table-auto">
+              <div class="table-caption">Your state</div>
+              <div class="table-header-group">
+                <div class="table-row">
+                  <div class="table-cell border border-black p-1">Money</div>
+                  <div class="table-cell border border-black p-1">
+                    Raw materials
+                  </div>
+                  <div class="table-cell border border-black p-1">
+                    Destroyers
+                  </div>
+                  <div class="table-cell border border-black p-1">
+                    Manufactories
+                  </div>
+                </div>
+              </div>
+              <div class="table-row-group">
+                <div class="table-row">
+                  <div class="table-cell border border-black p-1">
+                    {{ userState.money }}
+                  </div>
+                  <div class="table-cell border border-black p-1">
+                    {{ userState.raw_materials }}
+                  </div>
+                  <div class="table-cell border border-black p-1">
+                    {{ userState.destroyers }}
+                  </div>
+                  <div class="table-cell border border-black p-1">
+                    {{ userState.manufactories }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-row space-x-5 justify-center">
+          <div
+            class="flex flex-col border shadow-xl rounded-lg p-2 outline-none justify-center space-y-5 bg-white items-center text-center"
+          >
+            <h1>Buy offer</h1>
+            <input type="text" placeholder="Quantity of raw materials" />
+            <input type="text" placeholder="Price" />
+            <button class="btn">Send</button>
+          </div>
+          <div
+            class="flex flex-col border shadow-xl rounded-lg p-2 outline-none justify-center space-y-5 bg-white items-center text-center"
+          >
+            <h1>Produce offer</h1>
+            <input type="text" placeholder="Quantity to build destroyers" />
+            <button class="btn">Send</button>
+          </div>
+          <div
+            class="flex flex-col border shadow-xl rounded-lg p-2 outline-none justify-center space-y-5 bg-white items-center text-center"
+          >
+            <h1>Build offer</h1>
+            <input type="text" placeholder="Quantity to build manufactories" />
+            <button class="btn">Send</button>
+          </div>
+          <div
+            class="flex flex-col border shadow-xl rounded-lg p-2 outline-none justify-center space-y-5 bg-white items-center text-center"
+          >
+            <h1>Auction offer</h1>
+            <input type="text" placeholder="Quantity to sell destroyers" />
+            <input type="text" placeholder="Price" />
+            <button class="btn">Send</button>
+          </div>
+        </div>
+        <div class="flex flex-col justify-center pt-10">
+          <button class="btn">End turn</button>
+        </div>
       </div>
     </div>
   </div>
@@ -88,6 +188,8 @@ export default defineComponent({
     const chats = computed(() => store.state.chats);
     const selectedChat = ref(store.state.roomId);
     const messages = computed(() => chats.value[selectedChat.value].messages);
+    const roomState = computed(() => store.state.roomState);
+    const userState = computed(() => store.state.userState);
     const api: Api | undefined = inject("api");
     const text = ref("");
     const sendMessage = () => {
@@ -108,7 +210,9 @@ export default defineComponent({
       selectedChat,
       messages,
       text,
-      sendMessage
+      sendMessage,
+      roomState,
+      userState
     };
   }
 });

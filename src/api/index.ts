@@ -43,6 +43,12 @@ export default class Api {
 
       store.dispatch("addMessage", data);
     });
+    this.connecion.on("game_state", (data) => {
+      store.dispatch("setRoomState", data);
+    });
+    this.connecion.on("user_state", (data) => {
+      store.dispatch("setUserState", data);
+    });
   }
 
   public connect(roomId: string): void {

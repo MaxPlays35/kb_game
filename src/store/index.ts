@@ -27,6 +27,20 @@ export interface State {
   chats: {
     [key: string]: Chat;
   };
+  roomState: {
+    level: number;
+    volume: number;
+    minPriceRow: number;
+    maxDestroyers: number;
+    maxPriceDestroyer: number;
+  };
+  userState: {
+    money: number;
+    raw_materials: number;
+    destroyers: number;
+    manufactories: number;
+  };
+  isEndOfTurn: boolean;
 }
 
 export type Chat = {
@@ -70,6 +84,13 @@ export default createStore<State>({
     },
     addMessage({ commit }, data: Message) {
       commit("addMessage", data);
+    },
+    setRoomState({ commit }, data) {
+      commit("setRoomState", data);
+    },
+    setUserState({ commit }, data) {
+      commit("setUserState", data);
+      4;
     }
   },
   state: {
@@ -84,8 +105,22 @@ export default createStore<State>({
       isReady: false,
       peerId: ""
     },
+    roomState: {
+      level: 3,
+      volume: 0,
+      minPriceRow: 0,
+      maxDestroyers: 0,
+      maxPriceDestroyer: 0
+    },
+    userState: {
+      money: 10000,
+      raw_materials: 4,
+      destroyers: 2,
+      manufactories: 2
+    },
     token: "",
-    chats: {}
+    chats: {},
+    isEndOfTurn: false
   },
   mutations: {
     addPlayer(state, player: Player) {
@@ -130,6 +165,12 @@ export default createStore<State>({
     },
     addMessage(state, data: Message) {
       state.chats[data.peerId].messages.push(data);
+    },
+    setRoomState(state, data) {
+      state.roomState = data;
+    },
+    setUserState(state, data) {
+      state.userState = data;
     }
   },
   modules: {}
