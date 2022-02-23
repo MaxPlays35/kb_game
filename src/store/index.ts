@@ -30,7 +30,7 @@ export interface State {
 }
 
 export type Chat = {
-  peerId: string;
+  name: string;
   messages: Message[];
 };
 
@@ -41,6 +41,7 @@ export type Message = {
   };
   message: string;
   time?: string;
+  peerId: string;
 };
 
 export default createStore<State>({
@@ -89,16 +90,16 @@ export default createStore<State>({
   mutations: {
     addPlayer(state, player: Player) {
       state.players.push(player);
-      state.chats[player.nickname] = {
-        peerId: player.peerId,
+      state.chats[player.peerId] = {
+        name: player.nickname,
         messages: []
       };
     },
     updatePlayers(state, players: Player[]) {
       state.players = players;
       for (const player of players) {
-        state.chats[player.nickname] = {
-          peerId: player.peerId,
+        state.chats[player.peerId] = {
+          name: player.nickname,
           messages: []
         };
       }
@@ -122,13 +123,13 @@ export default createStore<State>({
     },
     setRoom(state, roomId) {
       state.roomId = roomId;
-      state.chats.social = {
-        peerId: roomId,
+      state.chats[state.roomId] = {
+        name: "Social",
         messages: []
       };
     },
     addMessage(state, data: Message) {
-      state.chats[data.author.nickname].messages.push(data);
+      state.chats[data.peerId].messages.push(data);
     }
   },
   modules: {}

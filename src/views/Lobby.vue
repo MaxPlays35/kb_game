@@ -5,20 +5,24 @@
         <h2>Choose a peer</h2>
         <select v-model="selectedChat" class="w-full">
           <option :value="i" v-for="i in Object.keys(chats)" :key="i">
-            {{ i }}
+            {{ chats[i].name }}
           </option>
         </select>
       </div>
       <div class="flex flex-col h-99/100">
         <h2 class="self-center">Messages</h2>
         <div class="flex flex-col space-y-2">
-          <message-view
-            v-for="message in messages"
-            :key="message.time"
-            :time="message.time"
-            :nickname="message.nickname"
-            :message="message.message"
-          ></message-view>
+          <div v-if="messages.length">
+            {{ messages }}
+            <message-view
+              v-for="message in messages"
+              :key="message.time"
+              :time="message.time"
+              :nickname="message.author.nickname"
+              :message="message.message"
+            ></message-view>
+          </div>
+          <p v-else>There is no messages</p>
           <!-- <div class="bg-warm-gray-50 rounded w-5/6">
             <p>dsfds</p>
           </div>
@@ -74,7 +78,7 @@
 <script lang="ts">
 import Api from "@/api";
 import MessageView from "@/components/MessageView.vue";
-import { computed, defineComponent, inject, ref, watch } from "vue";
+import { computed, defineComponent, inject, ref } from "vue";
 import { useStore } from "vuex";
 
 export default defineComponent({
@@ -82,8 +86,8 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const chats = computed(() => store.state.chats);
-    const selectedChat = ref("social");
-    const messages = computed(() => store.state.chats[selectedChat.value]);
+    const selectedChat = ref(store.state.roomId);
+    const messages = computed(() => chats.value[selectedChat.value].messages);
     const api: Api | undefined = inject("api");
     const text = ref("");
     const sendMessage = () => {
@@ -94,7 +98,7 @@ export default defineComponent({
             profilePhoto: store.state.user.profilePhoto
           },
           message: text.value,
-          peerId: chats.value[selectedChat.value].peerId
+          peerId: selectedChat.value
         });
       }
     };

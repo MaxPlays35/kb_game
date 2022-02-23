@@ -39,6 +39,8 @@ export default class Api {
     });
 
     this.connecion.on("message_client", (data: Message) => {
+      console.log(data);
+
       store.dispatch("addMessage", data);
     });
   }

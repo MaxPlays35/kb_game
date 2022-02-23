@@ -5,7 +5,7 @@
       'flex flex-col bg-blue-500 rounded w-5/6 self-end': blue
     }"
   >
-    <p></p>
+    <p>{{ message }}</p>
   </div>
 </template>
 
@@ -26,7 +26,7 @@ export default defineComponent({
       required: true
     },
     time: {
-      type: Number,
+      type: String,
       required: true
     },
     message: {
