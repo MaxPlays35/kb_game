@@ -7,6 +7,7 @@ interface Player {
   level: number;
   id: string;
   isReady: boolean;
+  isAlive: boolean;
   token: string;
   peerId: string;
 }

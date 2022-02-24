@@ -40,8 +40,8 @@
       <div class="h-50 bg-violet-500 flex flex-row">
         <div
           class="flex flex-col items-center justify-center pl-4 text-center"
-          v-for="i in 5"
-          :key="i"
+          v-for="player in players"
+          :key="player.id"
         >
           <img
             class="rounded-5xl w-20"
@@ -51,8 +51,8 @@
             width="45"
           />
           <div class="pt-2">
-            <p>nickname</p>
-            <p>Live</p>
+            <p>{{ player.nickname }}</p>
+            <p>{{ player.isAlive }}</p>
           </div>
         </div>
       </div>
@@ -89,7 +89,7 @@
                     {{ roomState.volume }}
                   </div>
                   <div class="table-cell border border-black p-1">
-                    {{ roomState.minPriceRow }}
+                    {{ roomState.minPriceRaw }}
                   </div>
                   <div class="table-cell border border-black p-1">
                     {{ roomState.maxDestroyers }}
@@ -144,6 +144,7 @@
               type="number"
               placeholder="Quantity of raw materials"
               v-model="buyOffer.rawMaterials"
+              :min="roomState.minPriceRaw"
             />
             <input type="number" placeholder="Price" v-model="buyOffer.price" />
             <button class="btn" @click="sendBuyOffer">Send</button>
@@ -183,12 +184,13 @@
               type="number"
               placeholder="Price"
               v-model="auctionOffer.price"
+              :max="roomState.maxPriceDestroyer"
             />
             <button class="btn" @click="sendAuctionOffer">Send</button>
           </div>
         </div>
         <div class="flex flex-col justify-center pt-10">
-          <button class="btn">End turn</button>
+          <button class="btn" @click="endMove">End turn</button>
         </div>
       </div>
     </div>
@@ -205,13 +207,18 @@ export default defineComponent({
   components: { MessageView },
   setup() {
     const store = useStore();
+
     const chats = computed(() => store.state.chats);
     const selectedChat = ref(store.state.roomId);
     const messages = computed(() => chats.value[selectedChat.value].messages);
+    const text = ref("");
+
     const roomState = computed(() => store.state.roomState);
     const userState = computed(() => store.state.userState);
+    const players = computed(() => store.state.players);
+
     const api: Api | undefined = inject("api");
-    const text = ref("");
+
     const buyOffer = reactive({
       rawMaterials: "",
       price: ""
@@ -269,6 +276,11 @@ export default defineComponent({
         });
       }
     };
+    const endMove = () => {
+      if (api) {
+        api.endMove();
+      }
+    };
 
     return {
       chats,
@@ -285,7 +297,9 @@ export default defineComponent({
       buyOffer,
       auctionOffer,
       produceOffer,
-      buildOffer
+      buildOffer,
+      players,
+      endMove
     };
   }
 });
@@ -296,6 +310,6 @@ input {
   @apply border transition-colors focus:border-blue-500 focus:outline-none border-1.5px rounded-md text-sm text-center w-full;
 }
 .btn {
-  @apply w-25 self-center bg-blue-500 text-white rounded-sm focus:outline-none hover:bg-blue-700 transition-colors active:bg-blue-900 focus:border-red-500 border rounded-md h-10;
+  @apply w-25 self-center bg-blue-500 text-white focus:outline-none hover:bg-blue-700 transition-colors active:bg-blue-900 focus:border-red-500 border rounded-md h-10;
 }
 </style>

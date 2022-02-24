@@ -71,12 +71,39 @@ export default class Api {
     this.connecion.on("user_state", (data) => {
       store.dispatch("setUserState", data);
     });
+    this.connecion.on("error", (data) => {
+      store.dispatch("error", data);
+    });
+    this.connecion.on("finish_connect", (roomId) => {
+      store.dispatch("joinRoom", roomId);
+      router.push("/waiting");
+    });
+    this.connecion.on("bankrupt", () => {
+      store.state.roomState = {
+        level: 3,
+        volume: 0,
+        minPriceRaw: 0,
+        maxDestroyers: 0,
+        maxPriceDestroyer: 0
+      };
+      store.state.userState = {
+        money: 10000,
+        raw_materials: 4,
+        destroyers: 2,
+        manufactories: 2
+      };
+      store.state.players = [];
+
+      router.push("/");
+      store.state.error = {
+        text: "You lose",
+        show: true
+      };
+    });
   }
 
   public connect(roomId: string): void {
     this.connecion.emit("join_room", { roomId, id: store.state.user.id });
-    store.dispatch("joinRoom", roomId);
-    router.push("/waiting");
   }
 
   public createRoom(): void {
@@ -111,18 +138,34 @@ export default class Api {
   }
 
   public sendBuyOffer(offer: BuyOffer): void {
-    this.connecion.emit("buy_offer", offer);
+    this.connecion.emit("buy_offer", { ...offer, roomId: store.state.roomId });
   }
 
   public sendAuctionOffer(offer: AuctionOffer): void {
-    this.connecion.emit("auction_offer", offer);
+    this.connecion.emit("auction_offer", {
+      ...offer,
+      roomId: store.state.roomId
+    });
   }
 
   public sendProduceOffer(offer: ProduceOffer): void {
-    this.connecion.emit("produce_offer", offer);
+    this.connecion.emit("produce_offer", {
+      ...offer,
+      roomId: store.state.roomId
+    });
   }
 
   public sendBuildOffer(offer: BuildOffer): void {
-    this.connecion.emit("build_offer", offer);
+    this.connecion.emit("build_offer", {
+      ...offer,
+      roomId: store.state.roomId
+    });
+  }
+
+  public endMove(): void {
+    this.connecion.emit("end_move", {
+      playerId: store.state.user.id,
+      roomId: store.state.roomId
+    });
   }
 }

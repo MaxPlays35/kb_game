@@ -11,6 +11,7 @@ export type Player = {
   level: number;
   id: string;
   isReady: boolean;
+  isAlive: boolean;
   peerId: string;
 };
 
@@ -30,7 +31,7 @@ export interface State {
   roomState: {
     level: number;
     volume: number;
-    minPriceRow: number;
+    minPriceRaw: number;
     maxDestroyers: number;
     maxPriceDestroyer: number;
   };
@@ -41,6 +42,14 @@ export interface State {
     manufactories: number;
   };
   isEndOfTurn: boolean;
+  buyOffer: boolean;
+  produceOffer: boolean;
+  auctionOffer: boolean;
+  buildOffer: boolean;
+  error: {
+    text: string;
+    show: boolean;
+  };
 }
 
 export type Chat = {
@@ -90,7 +99,9 @@ export default createStore<State>({
     },
     setUserState({ commit }, data) {
       commit("setUserState", data);
-      4;
+    },
+    error({ commit }, data) {
+      commit("setError", data);
     }
   },
   state: {
@@ -103,12 +114,13 @@ export default createStore<State>({
       level: 1,
       id: "",
       isReady: false,
+      isAlive: true,
       peerId: ""
     },
     roomState: {
       level: 3,
       volume: 0,
-      minPriceRow: 0,
+      minPriceRaw: 0,
       maxDestroyers: 0,
       maxPriceDestroyer: 0
     },
@@ -120,7 +132,15 @@ export default createStore<State>({
     },
     token: "",
     chats: {},
-    isEndOfTurn: false
+    isEndOfTurn: false,
+    buyOffer: false,
+    produceOffer: false,
+    auctionOffer: false,
+    buildOffer: false,
+    error: {
+      text: "",
+      show: false
+    }
   },
   mutations: {
     addPlayer(state, player: Player) {
@@ -171,6 +191,10 @@ export default createStore<State>({
     },
     setUserState(state, data) {
       state.userState = data;
+    },
+    setError(state, error) {
+      state.error.text = error.text;
+      state.error.show = true;
     }
   },
   modules: {}
