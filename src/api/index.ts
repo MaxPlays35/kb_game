@@ -2,6 +2,28 @@ import { io, Socket } from "socket.io-client";
 import router from "@/router";
 import store, { Message, Player } from "@/store";
 
+type BuyOffer = {
+  playerId: string;
+  rawMaterials: number;
+  price: number;
+};
+
+type AuctionOffer = {
+  playerId: string;
+  destroyers: number;
+  price: number;
+};
+
+type ProduceOffer = {
+  playerId: string;
+  destroyers: number;
+};
+
+type BuildOffer = {
+  playerId: string;
+  manufactories: number;
+};
+
 export default class Api {
   private connecion: Socket;
 
@@ -86,5 +108,21 @@ export default class Api {
 
   public sendMessage(message: unknown): void {
     this.connecion.emit("message_server", message);
+  }
+
+  public sendBuyOffer(offer: BuyOffer): void {
+    this.connecion.emit("buy_offer", offer);
+  }
+
+  public sendAuctionOffer(offer: AuctionOffer): void {
+    this.connecion.emit("auction_offer", offer);
+  }
+
+  public sendProduceOffer(offer: ProduceOffer): void {
+    this.connecion.emit("produce_offer", offer);
+  }
+
+  public sendBuildOffer(offer: BuildOffer): void {
+    this.connecion.emit("build_offer", offer);
   }
 }

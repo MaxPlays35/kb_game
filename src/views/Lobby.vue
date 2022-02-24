@@ -137,34 +137,54 @@
         </div>
         <div class="flex flex-row space-x-5 justify-center">
           <div
-            class="flex flex-col border shadow-xl rounded-lg p-2 outline-none justify-center space-y-5 bg-white items-center text-center"
+            class="flex flex-col border shadow-xl rounded-lg p-2 outline-none justify-center space-y-2 bg-white items-center text-center"
           >
             <h1>Buy offer</h1>
-            <input type="text" placeholder="Quantity of raw materials" />
-            <input type="text" placeholder="Price" />
-            <button class="btn">Send</button>
+            <input
+              type="number"
+              placeholder="Quantity of raw materials"
+              v-model="buyOffer.rawMaterials"
+            />
+            <input type="number" placeholder="Price" v-model="buyOffer.price" />
+            <button class="btn" @click="sendBuyOffer">Send</button>
           </div>
           <div
-            class="flex flex-col border shadow-xl rounded-lg p-2 outline-none justify-center space-y-5 bg-white items-center text-center"
+            class="flex flex-col border shadow-xl rounded-lg p-2 outline-none justify-center space-y-2 bg-white items-center text-center"
           >
             <h1>Produce offer</h1>
-            <input type="text" placeholder="Quantity to build destroyers" />
-            <button class="btn">Send</button>
+            <input
+              type="number"
+              placeholder="Quantity to build destroyers"
+              v-model="produceOffer"
+            />
+            <button class="btn" @click="sendProduceOffer">Send</button>
           </div>
           <div
-            class="flex flex-col border shadow-xl rounded-lg p-2 outline-none justify-center space-y-5 bg-white items-center text-center"
+            class="flex flex-col border shadow-xl rounded-lg p-2 outline-none justify-center space-y-2 bg-white items-center text-center"
           >
             <h1>Build offer</h1>
-            <input type="text" placeholder="Quantity to build manufactories" />
-            <button class="btn">Send</button>
+            <input
+              type="number"
+              placeholder="Quantity to build manufactories"
+              v-model="buildOffer"
+            />
+            <button class="btn" @click="sendBuildOffer">Send</button>
           </div>
           <div
-            class="flex flex-col border shadow-xl rounded-lg p-2 outline-none justify-center space-y-5 bg-white items-center text-center"
+            class="flex flex-col border shadow-xl rounded-lg p-2 outline-none justify-center space-y-2 bg-white items-center text-center"
           >
             <h1>Auction offer</h1>
-            <input type="text" placeholder="Quantity to sell destroyers" />
-            <input type="text" placeholder="Price" />
-            <button class="btn">Send</button>
+            <input
+              type="number"
+              placeholder="Quantity to sell destroyers"
+              v-model="auctionOffer.destroyers"
+            />
+            <input
+              type="number"
+              placeholder="Price"
+              v-model="auctionOffer.price"
+            />
+            <button class="btn" @click="sendAuctionOffer">Send</button>
           </div>
         </div>
         <div class="flex flex-col justify-center pt-10">
@@ -178,7 +198,7 @@
 <script lang="ts">
 import Api from "@/api";
 import MessageView from "@/components/MessageView.vue";
-import { computed, defineComponent, inject, ref } from "vue";
+import { computed, defineComponent, inject, reactive, ref } from "vue";
 import { useStore } from "vuex";
 
 export default defineComponent({
@@ -192,6 +212,17 @@ export default defineComponent({
     const userState = computed(() => store.state.userState);
     const api: Api | undefined = inject("api");
     const text = ref("");
+    const buyOffer = reactive({
+      rawMaterials: "",
+      price: ""
+    });
+    const auctionOffer = reactive({
+      destroyers: "",
+      price: ""
+    });
+    const produceOffer = ref("");
+    const buildOffer = ref("");
+
     const sendMessage = () => {
       if (api) {
         api.sendMessage({
@@ -204,6 +235,40 @@ export default defineComponent({
         });
       }
     };
+    const sendBuyOffer = () => {
+      if (api) {
+        api.sendBuyOffer({
+          rawMaterials: parseInt(buyOffer.rawMaterials),
+          price: parseInt(buyOffer.price),
+          playerId: store.state.user.id
+        });
+      }
+    };
+    const sendProduceOffer = () => {
+      if (api) {
+        api.sendProduceOffer({
+          playerId: store.state.user.id,
+          destroyers: parseInt(produceOffer.value)
+        });
+      }
+    };
+    const sendBuildOffer = () => {
+      if (api) {
+        api.sendBuildOffer({
+          playerId: store.state.user.id,
+          manufactories: parseInt(buildOffer.value)
+        });
+      }
+    };
+    const sendAuctionOffer = () => {
+      if (api) {
+        api.sendAuctionOffer({
+          playerId: store.state.user.id,
+          destroyers: parseInt(auctionOffer.destroyers),
+          price: parseInt(auctionOffer.price)
+        });
+      }
+    };
 
     return {
       chats,
@@ -212,13 +277,24 @@ export default defineComponent({
       text,
       sendMessage,
       roomState,
-      userState
+      userState,
+      sendBuyOffer,
+      sendProduceOffer,
+      sendBuildOffer,
+      sendAuctionOffer,
+      buyOffer,
+      auctionOffer,
+      produceOffer,
+      buildOffer
     };
   }
 });
 </script>
 
 <style scoped>
+input {
+  @apply border transition-colors focus:border-blue-500 focus:outline-none border-1.5px rounded-md text-sm text-center w-full;
+}
 .btn {
   @apply w-25 self-center bg-blue-500 text-white rounded-sm focus:outline-none hover:bg-blue-700 transition-colors active:bg-blue-900 focus:border-red-500 border rounded-md h-10;
 }
