@@ -61,8 +61,6 @@ export default class Api {
     });
 
     this.connecion.on("message_client", (data: Message) => {
-      console.log(data);
-
       store.dispatch("addMessage", data);
     });
     this.connecion.on("game_state", (data) => {
@@ -84,7 +82,8 @@ export default class Api {
         volume: 0,
         minPriceRaw: 0,
         maxDestroyers: 0,
-        maxPriceDestroyer: 0
+        maxPriceDestroyer: 0,
+        currentMonth: 1
       };
       store.state.userState = {
         money: 10000,
@@ -96,7 +95,16 @@ export default class Api {
 
       router.push("/");
       store.state.error = {
+        error: "Lose",
         text: "You lose",
+        show: true
+      };
+    });
+
+    this.connecion.on("win", (data) => {
+      store.state.error = {
+        error: data.error,
+        text: data.text,
         show: true
       };
     });
@@ -138,6 +146,7 @@ export default class Api {
   }
 
   public sendBuyOffer(offer: BuyOffer): void {
+    console.log(offer);
     this.connecion.emit("buy_offer", { ...offer, roomId: store.state.roomId });
   }
 

@@ -9,10 +9,10 @@
           </option>
         </select>
       </div>
-      <div class="flex flex-col h-99/100">
+      <div class="flex flex-col h-screen">
         <h2 class="self-center">Messages</h2>
-        <div class="flex flex-col space-y-2">
-          <div class="flex flex-col space-y-2" v-if="messages.length">
+        <div class="h-full flex flex-col space-y-2">
+          <div class="h-full flex flex-col space-y-2" v-if="messages.length">
             <message-view
               v-for="message in messages"
               :key="message.time"
@@ -22,17 +22,17 @@
             ></message-view>
           </div>
           <p v-else>There is no messages</p>
-        </div>
-      </div>
-      <div class="h-auto">
-        <div class="flex flex-row p-1">
-          <input
-            class="rounded"
-            type="text"
-            placeholder="Your message..."
-            v-model="text"
-          />
-          <button class="btn" @click="sendMessage">Send</button>
+          <div class="relative">
+            <div class="flex flex-row p-1 h-full">
+              <input
+                class="rounded"
+                type="text"
+                placeholder="Your message..."
+                v-model="text"
+              />
+              <button class="btn" @click="sendMessage">Send</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -56,7 +56,7 @@
           </div>
         </div>
       </div>
-      <div class="bg-cyan-500 h-full">
+      <div class="bg-cyan-500 max-h-full">
         <div class="p-4 flex flex-col justify-center pt-25">
           <div
             class="flex flex-col border shadow-xl rounded-lg p-10 outline-none justify-center space-y-5 bg-white items-center text-center"
@@ -133,6 +133,7 @@
                 </div>
               </div>
             </div>
+            <p class="text-lg">Current month: {{ roomState.currentMonth }}</p>
           </div>
         </div>
         <div class="flex flex-row space-x-5 justify-center">
@@ -189,7 +190,7 @@
             <button class="btn" @click="sendAuctionOffer">Send</button>
           </div>
         </div>
-        <div class="flex flex-col justify-center pt-10">
+        <div class="flex flex-col justify-center pt-2">
           <button class="btn" @click="endMove">End turn</button>
         </div>
       </div>
@@ -231,7 +232,7 @@ export default defineComponent({
     const buildOffer = ref("");
 
     const sendMessage = () => {
-      if (api) {
+      if (api && text.value != "") {
         api.sendMessage({
           author: {
             nickname: store.state.user.nickname,
@@ -240,6 +241,7 @@ export default defineComponent({
           message: text.value,
           peerId: selectedChat.value
         });
+        text.value = "";
       }
     };
     const sendBuyOffer = () => {

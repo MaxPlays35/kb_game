@@ -5,7 +5,7 @@
     <div
       class="w-full h-full fixed z-10 overflow-auto bg-black/40 flex flex-col justify-center items-center"
       :class="{
-        hidden: !error.show
+        'hidden ': !error.show
       }"
     >
       <div class="w-3/10 bg-white rounded-md">

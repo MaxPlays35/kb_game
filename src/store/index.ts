@@ -34,6 +34,7 @@ export interface State {
     minPriceRaw: number;
     maxDestroyers: number;
     maxPriceDestroyer: number;
+    currentMonth: number;
   };
   userState: {
     money: number;
@@ -47,6 +48,7 @@ export interface State {
   auctionOffer: boolean;
   buildOffer: boolean;
   error: {
+    error: string;
     text: string;
     show: boolean;
   };
@@ -122,7 +124,8 @@ export default createStore<State>({
       volume: 0,
       minPriceRaw: 0,
       maxDestroyers: 0,
-      maxPriceDestroyer: 0
+      maxPriceDestroyer: 0,
+      currentMonth: 1
     },
     userState: {
       money: 10000,
@@ -138,6 +141,7 @@ export default createStore<State>({
     auctionOffer: false,
     buildOffer: false,
     error: {
+      error: "",
       text: "",
       show: false
     }
@@ -193,6 +197,7 @@ export default createStore<State>({
       state.userState = data;
     },
     setError(state, error) {
+      state.error.error = error.error;
       state.error.text = error.text;
       state.error.show = true;
     }
