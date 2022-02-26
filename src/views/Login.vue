@@ -2,11 +2,20 @@
   <div
     class="flex flex-col border shadow-xl rounded-lg p-10 outline-none focus justify-center space-y-2"
   >
-    <label for="login" class="self-center">Login:</label>
-    <input type="text" id="login" v-model="creds.login" />
-    <label for="password" class="self-center">Password:</label>
-    <input type="password" id="password" v-model="creds.password" />
-    <button class="btn" @click="login">Log In</button>
+    <p class="text-lg self-center font-bold">Authentication</p>
+    <form @submit.prevent="login" class="w-1/2 self-center flex flex-col">
+      <label for="login" class="self-center">Login:</label>
+      <input type="text" id="login" v-model="creds.login" />
+      <label for="password" class="self-center">Password:</label>
+      <input type="password" id="password" v-model="creds.password" />
+      <button class="btn" type="submit">Log In</button>
+    </form>
+    <p class="self-center">
+      If you don't have account go here
+      <router-link to="/register" class="font-bold self-center"
+        >Register</router-link
+      >
+    </p>
   </div>
 </template>
 

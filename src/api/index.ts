@@ -28,7 +28,7 @@ export default class Api {
   private connecion: Socket;
 
   constructor() {
-    this.connecion = io("ws://192.168.1.63:10000/game");
+    this.connecion = io("ws://192.168.43.93:10000/game");
     this.connecion.on("user_joined", (player: Player) => {
       store.dispatch("addPlayer", player);
     });
@@ -184,5 +184,12 @@ export default class Api {
     store.state.players = [];
     store.state.user.isReady = false;
     store.state.user.isAlive = true;
+  }
+
+  public disconnect_user(roomId: string, playerId: string): void {
+    this.connecion.emit("disconnect_user", {
+      roomId,
+      playerId
+    });
   }
 }

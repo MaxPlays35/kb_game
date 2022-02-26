@@ -30,12 +30,23 @@
 <script lang="ts">
 import { computed, defineComponent } from "vue";
 import { useStore } from "vuex";
+import Api from "./api";
 
 export default defineComponent({
   setup() {
     const store = useStore();
     const error = computed(() => store.state.error);
     const close = () => (store.state.error.show = false);
+    // const api: Api | undefined = inject("api");
+
+    // window.addEventListener("beforeunload", function (e) {
+    //   e.preventDefault();
+    //   if (api) {
+    //     api.disconnect_user(store.state.roomId, store.state.user.id);
+    //     e.returnValue = "Sent";
+    //   }
+    //   e.returnValue = "";
+    // });
 
     return {
       error,

@@ -2,11 +2,20 @@
   <div
     class="flex flex-col border shadow-xl rounded-lg p-10 outline-none focus justify-center space-y-2"
   >
-    <label for="login" class="self-center">Login:</label>
-    <input type="text" id="login" v-model="creds.login" />
-    <label for="password" class="self-center">Password:</label>
-    <input type="password" id="password" v-model="creds.password" />
-    <button class="btn" @click="register">Register</button>
+    <p class="text-lg font-bold self-center">Registration</p>
+    <form @submit.prevent="register" class="w-1/2 self-center flex flex-col">
+      <label for="login" class="self-center">Login:</label>
+      <input type="text" id="login" v-model="creds.login" />
+      <label for="password" class="self-center">Password:</label>
+      <input type="password" id="password" v-model="creds.password" />
+      <button class="btn" type="submit">Register</button>
+    </form>
+    <p>
+      If you have account go here
+      <router-link to="/login" class="font-bold self-center"
+        >Register</router-link
+      >
+    </p>
   </div>
 </template>
 
@@ -26,6 +35,7 @@ export default defineComponent({
 
     const register = async () => {
       const answer = await store.dispatch("register", creds);
+
       if (!answer.success) {
         store.dispatch("error", {
           error: "Error",
