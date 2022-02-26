@@ -12,7 +12,7 @@
         <div
           class="w-full p-8 flex flex-col space-y-4 justify-center items-center"
         >
-          <div class="text-2xl font-bold">Error</div>
+          <div class="text-2xl font-bold">{{ error.error }}</div>
           <div class="text-lg">{{ error.text }}</div>
 
           <button

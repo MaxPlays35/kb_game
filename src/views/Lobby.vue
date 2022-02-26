@@ -21,7 +21,7 @@
               :message="message.message"
             ></message-view>
           </div>
-          <p v-else>There is no messages</p>
+          <p class="h-full" v-else>There is no messages</p>
           <div class="relative">
             <div class="flex flex-row p-1 h-full">
               <input

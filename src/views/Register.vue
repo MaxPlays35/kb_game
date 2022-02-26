@@ -6,7 +6,7 @@
     <input type="text" id="login" v-model="creds.login" />
     <label for="password" class="self-center">Password:</label>
     <input type="password" id="password" v-model="creds.password" />
-    <button class="btn" @click="login">Log In</button>
+    <button class="btn" @click="register">Register</button>
   </div>
 </template>
 
@@ -24,8 +24,8 @@ export default defineComponent({
       password: ""
     });
 
-    const login = async () => {
-      const answer = await store.dispatch("login", creds);
+    const register = async () => {
+      const answer = await store.dispatch("register", creds);
       if (!answer.success) {
         store.dispatch("error", {
           error: "Error",
@@ -39,7 +39,7 @@ export default defineComponent({
       }
     };
 
-    return { login, creds };
+    return { register, creds };
   }
 });
 </script>

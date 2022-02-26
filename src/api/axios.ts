@@ -17,17 +17,29 @@ export type AuthResponse = {
   token: string;
 };
 
+export type Creds = {
+  login: string;
+  password: string;
+};
+
 class HttpApi {
   readonly httpClient: AxiosInstance;
 
   constructor() {
     this.httpClient = axios.create({
-      baseURL: "http://127.0.0.1:10000/"
+      baseURL: "http://192.168.1.63:10000/"
     });
   }
 
-  public async login(): Promise<AuthResponse> {
-    const { data } = await this.httpClient.post("login");
+  public async login(creds: Creds): Promise<AuthResponse> {
+    const { data } = await this.httpClient.post("login", creds);
+
+    return data;
+  }
+
+  public async register(creds: Creds): Promise<AuthResponse> {
+    const { data } = await this.httpClient.post("register", creds);
+
     return data;
   }
 }

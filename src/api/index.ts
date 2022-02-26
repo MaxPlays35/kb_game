@@ -28,7 +28,7 @@ export default class Api {
   private connecion: Socket;
 
   constructor() {
-    this.connecion = io("ws://127.0.0.1:10000/game");
+    this.connecion = io("ws://192.168.1.63:10000/game");
     this.connecion.on("user_joined", (player: Player) => {
       store.dispatch("addPlayer", player);
     });
@@ -77,21 +77,7 @@ export default class Api {
       router.push("/waiting");
     });
     this.connecion.on("bankrupt", () => {
-      store.state.roomState = {
-        level: 3,
-        volume: 0,
-        minPriceRaw: 0,
-        maxDestroyers: 0,
-        maxPriceDestroyer: 0,
-        currentMonth: 1
-      };
-      store.state.userState = {
-        money: 10000,
-        raw_materials: 4,
-        destroyers: 2,
-        manufactories: 2
-      };
-      store.state.players = [];
+      this.clean();
 
       router.push("/");
       store.state.error = {
@@ -102,11 +88,13 @@ export default class Api {
     });
 
     this.connecion.on("win", (data) => {
+      this.clean();
       store.state.error = {
         error: data.error,
         text: data.text,
         show: true
       };
+      router.push("/");
     });
   }
 
@@ -114,8 +102,8 @@ export default class Api {
     this.connecion.emit("join_room", { roomId, id: store.state.user.id });
   }
 
-  public createRoom(): void {
-    this.connecion.emit("create_room", { id: store.state.user.id });
+  public createRoom(months: number): void {
+    this.connecion.emit("create_room", { id: store.state.user.id, months });
   }
 
   public changeReady(): void {
@@ -176,5 +164,25 @@ export default class Api {
       playerId: store.state.user.id,
       roomId: store.state.roomId
     });
+  }
+
+  private clean(): void {
+    store.state.roomState = {
+      level: 3,
+      volume: 0,
+      minPriceRaw: 0,
+      maxDestroyers: 0,
+      maxPriceDestroyer: 0,
+      currentMonth: 1
+    };
+    store.state.userState = {
+      money: 10000,
+      raw_materials: 4,
+      destroyers: 2,
+      manufactories: 2
+    };
+    store.state.players = [];
+    store.state.user.isReady = false;
+    store.state.user.isAlive = true;
   }
 }

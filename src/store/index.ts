@@ -80,12 +80,27 @@ export default createStore<State>({
     updateReady({ commit }, data) {
       commit("updateReady", data);
     },
-    async login({ commit }) {
-      const response: AuthResponse = await httpApi.login();
-      console.log(response);
+    async login({ commit }, creds) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response: any = await httpApi.login(creds);
 
+      if (!response.success) {
+        return response;
+      }
       commit("login", response);
       router.push("/connect");
+      return response;
+    },
+    async register({ commit }, creds) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response: any = await httpApi.register(creds);
+
+      if (!response.success) {
+        return response;
+      }
+      commit("login", response);
+      router.push("/connect");
+      return response;
     },
     removePlayer({ commit }, data) {
       commit("removePlayer", data.id);

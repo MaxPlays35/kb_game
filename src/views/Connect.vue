@@ -8,6 +8,7 @@
     >
       <label class="self-center" for="roomId">Room Id</label>
       <input type="text" v-model="idRoom" id="roomId" />
+
       <button class="btn" type="submit">Join Room</button>
     </form>
 
@@ -15,6 +16,8 @@
       @submit.prevent="createRoom"
       class="items-center flex flex-col space-y-2 pt-2"
     >
+      <label class="self-center" for="months">Months</label>
+      <input type="number" v-model="months" id="months" min="6" />
       <button class="btn">Create room</button>
     </form>
   </div>
@@ -27,19 +30,20 @@ import { defineComponent, inject, Ref, ref } from "vue";
 export default defineComponent({
   setup() {
     const idRoom: Ref<string> = ref("");
-    const server: Api | undefined = inject("api");
+    const months: Ref<number> = ref(0);
+    const api: Api | undefined = inject("api");
     const joinRoom = () => {
-      if (server) {
-        server.connect(idRoom.value);
+      if (api) {
+        api.connect(idRoom.value);
       }
     };
     const createRoom = () => {
-      if (server) {
-        server.createRoom();
+      if (api) {
+        api.createRoom(months.value);
       }
     };
 
-    return { idRoom, joinRoom, createRoom };
+    return { idRoom, joinRoom, createRoom, months };
   }
 });
 </script>
